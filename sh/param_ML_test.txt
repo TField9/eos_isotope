@@ -1,0 +1,1 @@
+be7 /cvmfs/ams.cern.ch/Offline/AMSDataDir/DataManagement/DataSetsDesc/Be.B1403/be7.pl1.l1.4400.6_05.txt 3151 3160 sdst_be7_3151_3160.root

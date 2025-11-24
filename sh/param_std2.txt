@@ -1,0 +1,1 @@
+/eos/ams/user/s/selu/mdst/tianye/root/Be_MC_ML_train_og/sdst_be7_1_10.root /eos/ams/user/s/selu/mdst/tianye/root/Be_MC_ML_stdcut/sdst_be7_1_10_std.root

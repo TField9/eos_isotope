@@ -1,0 +1,17 @@
+# submit.sub
+
+executable = /afs/cern.ch/work/s/seludev/private/tianye/sh/sdst_mc.zsh
+arguments  = $(flist) $(ibeg) $(iend) $(ofn)
+
+# 定义日志路径（可选）
+log    = /afs/cern.ch/work/s/seludev/private/tianye/log/$(ClusterId).condor.$(be).$(ibegin).$(iend).log
+#output = /afs/cern.ch/work/s/seludev/private/tianye/log/$(ClusterId).condor.$(be).$(ibegin).$(iend).out
+#error  = /afs/cern.ch/work/s/seludev/private/tianye/log/$(ClusterId).condor.$(be).$(ibegin).$(iend).err
+
+
+
+request_memory  = 4096 MB
++JobFlavour = "tomorrow"
+transfer_output_files = ""
+# 提交所有参数组合
+queue be, flist, ibeg, iend, ofn from /afs/cern.ch/work/s/seludev/private/tianye/sh/param_ML_test.txt

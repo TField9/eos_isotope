@@ -1,0 +1,21 @@
+# submit.sub
+
+executable = /eos/ams/user/s/selu/mdst/tianye/sh/stdcut.sh
+arguments  = $(input) $(output) 
+
+# 定义日志路径（可选）
+#log    = /eos/ams/user/s/selu/mdst/tianye/log/$(ClusterId).condor.log
+#output = /eos/ams/user/s/selu/mdst/tianye/log/$(ClusterId).condor.out
+#error  = /eos/ams/user/s/selu/mdst/tianye/log/$(ClusterId).condor.err
+
+log    = /afs/cern.ch/work/s/seludev/private/tianye/log/$(ClusterId).condor.log
+output = /afs/cern.ch/work/s/seludev/private/tianye/log/$(ClusterId).condor.out
+error  = /afs/cern.ch/work/s/seludev/private/tianye/log/$(ClusterId).condor.err
+
+
+
+request_memory  = 2000 MB
++JobFlavour = "espresso"
+transfer_output_files = ""
+# 提交所有参数组合
+queue input, output from /eos/ams/user/s/selu/mdst/tianye/sh/param_std2.txt
