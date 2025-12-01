@@ -194,6 +194,14 @@ struct pred_Be_prob{
               Float_t pred_Be_prob[3]; // 0: Be7, 1: Be9, 2: Be10
 };
 
+struct Richcut_flag{
+  Int_t richcut_flag[2];
+};
+
+struct Transformer_output{
+  Float_t trans_pdf[3][3]; //1d for detector, 2d for Be7,9,10
+};
+
 class DST {
 public:
   Status fStatus; Header fHeader; RTI    fRTI;
@@ -202,7 +210,7 @@ public:
   Trd    fTrd;    TrdK   fTrdK;   TrdG   fTrdG;   TrdHit fTrdHit; TrdV fTrdV;
   Rich   fRich;   Ecal   fEcal;   EcalH  fEcalH;  Vertex fVertex; 
   MCinfo fMCinfo; Estim  fEstim;  Refit  fRefit; Mass   fMass;
-  Extra fExtra; EcalX fEcalX; EK fEk; pred_Be_prob fPred_Be_prob;
+  Extra fExtra; EcalX fEcalX; EK fEk; Richcut_flag fRichcut_flag; Transformer_output fTransformer_output;
 
   void Clear() { Int_t *ptr = (Int_t *)this;
                  Int_t size = sizeof(DST)/sizeof(Int_t);
@@ -340,133 +348,61 @@ tree->Branch("refit",  &fRefit,  "tx[9]/F:ty[9]/F:tz[9]/F:"
   }
 
   void SetAddress(TTree *tree) {
-if(tree->GetBranch       ("status")){
-    tree->SetBranchAddress("status", &fStatus);}
-if(tree->GetBranch       ("header")){
-    tree->SetBranchAddress("header", &fHeader);}
-if(tree->GetBranch       ("rti")){
-    tree->SetBranchAddress("rti",    &fRTI);}
+    tree->SetBranchAddress("status", &fStatus);
+    tree->SetBranchAddress("header", &fHeader);
+    tree->SetBranchAddress("rti",    &fRTI);
 if (tree->GetBranch       ("part")){
     tree->SetBranchAddress("part",   &fPart);}
-
-if (tree->GetBranch       ("track")){
-    tree->SetBranchAddress("track",  &fTrack);}
-if (tree->GetBranch       ("trhit")){
-    tree->SetBranchAddress("trhit",  &fTrHit);}
+    
+    tree->SetBranchAddress("track",  &fTrack);
+    tree->SetBranchAddress("trhit",  &fTrHit);
 
 
 if (tree->GetBranch       ("trcls"))
     tree->SetBranchAddress("trcls",  &fTrCls);
-if (tree->GetBranch       ("beta")){
-    tree->SetBranchAddress("beta",   &fBeta);}
-if (tree->GetBranch       ("betah")){    
-    tree->SetBranchAddress("betah",  &fBetaH);}
+    tree->SetBranchAddress("beta",   &fBeta);
+    tree->SetBranchAddress("betah",  &fBetaH);
 if (tree->GetBranch       ("betas"))
     tree->SetBranchAddress("betas",  &fBetaHs);
-if (tree->GetBranch       ("tofhit")){
-    tree->SetBranchAddress("tofhit", &fTofHit);}
-if (tree->GetBranch       ("trd")){
-    tree->SetBranchAddress("trd",    &fTrd);}
-if (tree->GetBranch       ("trdk")){
-    tree->SetBranchAddress("trdk",   &fTrdK);}
-if (tree->GetBranch       ("trdg")){
-    tree->SetBranchAddress("trdg",   &fTrdG);}
-if (tree->GetBranch       ("trdv")){
-    tree->SetBranchAddress("trdv",   &fTrdV);}
-if (tree->GetBranch       ("trdhit")){
-    tree->SetBranchAddress("trdhit", &fTrdHit);}
-if (tree->GetBranch       ("rich")){
-    tree->SetBranchAddress("rich",   &fRich);}
-if (tree->GetBranch       ("tofhit")){
-    tree->SetBranchAddress("tofhit", &fTofHit);}
-
-if (tree->GetBranch       ("ecal")){
-    tree->SetBranchAddress("ecal",   &fEcal);}
+if (tree->GetBranch       ("tofhit"))
+    tree->SetBranchAddress("tofhit", &fTofHit);
+    tree->SetBranchAddress("trd",    &fTrd);
+    tree->SetBranchAddress("trdk",   &fTrdK);
+if (tree->GetBranch       ("trdg"))
+    tree->SetBranchAddress("trdg",   &fTrdG);
+if (tree->GetBranch       ("trdv"))
+    tree->SetBranchAddress("trdv",   &fTrdV);
+if (tree->GetBranch       ("trdhit"))
+    tree->SetBranchAddress("trdhit", &fTrdHit);
+    tree->SetBranchAddress("rich",   &fRich);
+if (tree->GetBranch       ("tofhit"))
+    tree->SetBranchAddress("ecal",   &fEcal);
   //tree->SetBranchAddress("ecalh",  &fEcalH);
-if (tree->GetBranch       ("vertex")){
-    tree->SetBranchAddress("vertex", &fVertex);}
-if (tree->GetBranch       ("mcinfo")){
-    tree->SetBranchAddress("mcinfo", &fMCinfo);}
-if (tree->GetBranch       ("mass")){
-    tree->SetBranchAddress("mass",   &fMass);}
+if (tree->GetBranch       ("vertex"))
+    tree->SetBranchAddress("vertex", &fVertex);
+    tree->SetBranchAddress("mcinfo", &fMCinfo);
+    tree->SetBranchAddress("mass",   &fMass);
 if(tree->GetBranch       ("estim")){
-    tree->SetBranchAddress("estim",  &fEstim);}
-if (tree->GetBranch       ("extra")){
-    tree->SetBranchAddress("extra",  &fExtra);}
-if (tree->GetBranch       ("refit")){
-    tree->SetBranchAddress("refit",  &fRefit);}
-if (tree->GetBranch       ("ecalx")){
-    tree->SetBranchAddress("ecalx",  &fEcalX);}
+    tree->SetBranchAddress("estim",  &fEstim);
+}
+else{cout<< "Warning: no estim branch in tree" << endl; }
+if (tree->GetBranch       ("extra"))
+    tree->SetBranchAddress("extra",  &fExtra);
+if (tree->GetBranch       ("refit"))
+    tree->SetBranchAddress("refit",  &fRefit);
+if (tree->GetBranch       ("ecalx"))
+    tree->SetBranchAddress("ecalx",  &fEcalX);
 if(tree->GetBranch       ("ek")){
-    tree->SetBranchAddress("ek",     &fEk);}
-
-if(tree->GetBranch("pred_Be_prob")){
-    tree->SetBranchAddress("pred_Be_prob", &fPred_Be_prob);}
+    tree->SetBranchAddress("ek",     &fEk);
   }
 
-  void SetAddress(TChain *tree) {
-    if(tree){cout<<"Setting DST address for TChain"<<endl;}
-if(tree->GetBranch       ("status")){
-    tree->SetBranchAddress("status", &fStatus);}
-if(tree->GetBranch       ("header")){
-    tree->SetBranchAddress("header", &fHeader);}
-if(tree->GetBranch       ("rti")){
-    tree->SetBranchAddress("rti",    &fRTI);}
-if (tree->GetBranch       ("part")){
-    tree->SetBranchAddress("part",   &fPart);}
-
-if (tree->GetBranch       ("track")){
-    tree->SetBranchAddress("track",  &fTrack);}
-if (tree->GetBranch       ("trhit")){
-    tree->SetBranchAddress("trhit",  &fTrHit);}
 
 
-if (tree->GetBranch       ("trcls"))
-    tree->SetBranchAddress("trcls",  &fTrCls);
-if (tree->GetBranch       ("beta")){
-    tree->SetBranchAddress("beta",   &fBeta);}
-if (tree->GetBranch       ("betah")){    
-    tree->SetBranchAddress("betah",  &fBetaH);}
-if (tree->GetBranch       ("betas"))
-    tree->SetBranchAddress("betas",  &fBetaHs);
-if (tree->GetBranch       ("tofhit")){
-    tree->SetBranchAddress("tofhit", &fTofHit);}
-if (tree->GetBranch       ("trd")){
-    tree->SetBranchAddress("trd",    &fTrd);}
-if (tree->GetBranch       ("trdk")){
-    tree->SetBranchAddress("trdk",   &fTrdK);}
-if (tree->GetBranch       ("trdg")){
-    tree->SetBranchAddress("trdg",   &fTrdG);}
-if (tree->GetBranch       ("trdv")){
-    tree->SetBranchAddress("trdv",   &fTrdV);}
-if (tree->GetBranch       ("trdhit")){
-    tree->SetBranchAddress("trdhit", &fTrdHit);}
-if (tree->GetBranch       ("rich")){
-    tree->SetBranchAddress("rich",   &fRich);}
-if (tree->GetBranch       ("tofhit")){
-    tree->SetBranchAddress("tofhit", &fTofHit);}
-
-if (tree->GetBranch       ("ecal")){
-    tree->SetBranchAddress("ecal",   &fEcal);}
-  //tree->SetBranchAddress("ecalh",  &fEcalH);
-if (tree->GetBranch       ("vertex")){
-    tree->SetBranchAddress("vertex", &fVertex);}
-if (tree->GetBranch       ("mcinfo")){
-    tree->SetBranchAddress("mcinfo", &fMCinfo);}
-if (tree->GetBranch       ("mass")){
-    tree->SetBranchAddress("mass",   &fMass);}
-if(tree->GetBranch       ("estim")){
-    tree->SetBranchAddress("estim",  &fEstim);}
-if (tree->GetBranch       ("extra")){
-    tree->SetBranchAddress("extra",  &fExtra);}
-if (tree->GetBranch       ("refit")){
-    tree->SetBranchAddress("refit",  &fRefit);}
-if (tree->GetBranch       ("ecalx")){
-    tree->SetBranchAddress("ecalx",  &fEcalX);}
-if(tree->GetBranch       ("ek")){
-    tree->SetBranchAddress("ek",     &fEk);}
-
-if(tree->GetBranch("pred_Be_prob")){
-    tree->SetBranchAddress("pred_Be_prob", &fPred_Be_prob);}
+if(tree->GetBranch("richcut_flag")){
+    tree->SetBranchAddress("richcut_flag", &fRichcut_flag);
+  }
+if(tree->GetBranch("transformer_output")){
+    tree->SetBranchAddress("transformer_output", &fTransformer_output);
+}
   }
 };

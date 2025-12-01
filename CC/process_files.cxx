@@ -101,7 +101,7 @@ void Fit(TH3D *h1, TH2D *&gSigma3D, TH2D *&gMean3D, const std::string& baseName,
             const double costhetaValue = h1->GetYaxis()->GetBinCenter(j);
             
             // 跳过无效能量区域
-            if(energyValue < 0.21 || energyValue > 15) {
+            if(energyValue < 0.21 || energyValue > 20) {
                 delete hProjection;  // 关键修复：防止内存泄漏
                 gSigma3D->SetBinContent(i, j, 0);
                 gMean3D->SetBinContent(i, j, 0);
@@ -155,15 +155,15 @@ void Fit(TH3D *h1, TH2D *&gSigma3D, TH2D *&gMean3D, const std::string& baseName,
                 prevSigma = currSigma;
                 prevMean = currMean;
                 gaussFit->SetRange(
-                    currMean -  2* currSigma, 
-                    currMean +  2* currSigma
+                    currMean -  1.5* currSigma, 
+                    currMean +  1.5* currSigma
                 );
             }
-            if(converged) {
-                std::cout<<"converged in 100"<<std::endl;
-            } else {
-                std::cout<<"not converged in 100"<<std::endl;
-            }
+            // if(converged) {
+            //     std::cout<<"converged in 100"<<std::endl;
+            // } else {
+            //     std::cout<<"not converged in 100"<<std::endl;
+            // }
 
             // 存储拟合结果
             gSigma3D->SetBinContent(i, j, prevSigma);
@@ -203,8 +203,7 @@ void process_files()
     TString iso_fda_dir="/eos/ams/user/s/selu/mdst/tianye/isotope_paper/root/isotope_fda";
 
     // 创建输出文件
-    TFile* f4 = new TFile("/work/alpha/sdst/mdfil/norm/norm2D_newMC.root", "recreate");
-    TFile* f5 = new TFile("/work/alpha/sdst/mdfil/norm/proj.root", "recreate");
+
 
     for(string iso : iso_type) {
         // 获取当前同位素对应的质量数向量
